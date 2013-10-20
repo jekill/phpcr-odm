@@ -17,30 +17,24 @@
  * <http://www.doctrine-project.org>.
  */
 
-namespace Doctrine\ODM\PHPCR;
+namespace Doctrine\ODM\PHPCR\Repository;
+
+use Doctrine\ODM\PHPCR\DocumentManager;
 
 /**
- * Basic exception class for Doctrine PHPCR-ODM.
+ * Interface for document repository factory.
+ *
+ * @since 1.1
  */
-class PHPCRException extends \Exception implements PHPCRExceptionInterface
+interface RepositoryFactory
 {
-    public static function unknownDocumentNamespace($documentNamespaceAlias)
-    {
-        return new self("Unknown Document namespace alias '$documentNamespaceAlias'.");
-    }
-
-    public static function documentManagerClosed()
-    {
-        return new self("The DocumentManager is closed.");
-    }
-
-    public static function cannotMoveByAssignment($objInfo)
-    {
-        return new self('Cannot move/copy children by assignment as it would be ambiguous. Please use the DocumentManager::move() or PHPCR\Session::copy() operations for this: '.$objInfo);
-    }
-
-    public static function invalidDocumentRepository($className)
-    {
-        return new self("Invalid repository class '".$className."'. It must be a Doctrine\Common\Persistence\ObjectRepository.");
-    }
+    /**
+     * Gets the repository for a document class.
+     *
+     * @param DocumentManager $documentManager The DocumentManager instance.
+     * @param string          $documentName    The name of the document.
+     *
+     * @return \Doctrine\Common\Persistence\ObjectRepository
+     */
+    public function getRepository(DocumentManager $documentManager, $documentName);
 }
