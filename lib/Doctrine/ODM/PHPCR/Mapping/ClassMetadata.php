@@ -22,6 +22,7 @@ namespace Doctrine\ODM\PHPCR\Mapping;
 use Doctrine\ODM\PHPCR\Exception\BadMethodCallException;
 use Doctrine\ODM\PHPCR\Mapping\MappingException;
 use Doctrine\ODM\PHPCR\Event;
+use Doctrine\ODM\PHPCR\PHPCRException;
 use ReflectionProperty;
 use ReflectionClass;
 use PHPCR\PropertyType;
@@ -1433,6 +1434,13 @@ class ClassMetadata implements ClassMetadataInterface
      */
     public function getIdentifierValue($document)
     {
+        if (!$this->identifier) {
+            throw new PHPCRException(sprintf(
+                'Class %s has no identifier field mapped. Please use $documentManager->getUnitOfWork()->getDocumentId($document) to get the id of arbitrary documents.',
+                $this->name
+            ));
+        }
+
         return (string) $this->getFieldValue($document, $this->identifier);
     }
 
@@ -1443,13 +1451,20 @@ class ClassMetadata implements ClassMetadataInterface
      * to {@see getIdentifierValue()} and returns an array with the identifier
      * field as a key.
      *
+     * If there is no identifier mapped, returns an empty array as per the
+     * specification.
+     *
      * @param object $document
      *
      * @return array
      */
     public function getIdentifierValues($document)
     {
-        return array($this->identifier => $this->getIdentifierValue($document));
+        try {
+            return array($this->identifier => $this->getIdentifierValue($document));
+        } catch (PHPCRException $e) {
+            return array();
+        }
     }
 
     /**
