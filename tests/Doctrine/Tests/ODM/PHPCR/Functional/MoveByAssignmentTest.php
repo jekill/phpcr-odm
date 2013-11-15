@@ -79,7 +79,7 @@ class MoveByAssignmentTest extends \Doctrine\Tests\ODM\PHPCR\PHPCRFunctionalTest
         $user2 = $this->dm->find($this->type, '/functional/jeka');
 
         $this->assertNotNull($user2, 'User must exist');
-        $this->assertEquals('moved again', $user->status);
+        $this->assertEquals('moved again', $user2->status);
 
     }
 
