@@ -67,6 +67,20 @@ class MoveByAssignmentTest extends \Doctrine\Tests\ODM\PHPCR\PHPCRFunctionalTest
 
         $user1 = $this->dm->find($this->type, '/functional/dbu');
         $this->assertNull($user1, 'User must not exist');
+
+        $user2 = $this->dm->find($this->type, '/functional/davidbu');
+
+        $user2->nodename = 'jeka';
+        $user2->status = 'moved again';
+
+        $this->dm->flush();
+        $this->dm->clear();
+
+        $user2 = $this->dm->find($this->type, '/functional/jeka');
+
+        $this->assertNotNull($user2, 'User must exist');
+        $this->assertEquals('moved again', $user->status);
+
     }
 
     public function testMoveByAssignment()

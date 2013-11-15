@@ -89,9 +89,11 @@ class HierarchyTest extends PHPCRFunctionalTestCase
     public function testChangeNodename(){
         /** @var NameDoc $doc */
         $doc = $this->dm->find($this->type, '/functional/thename');
+
         $child1           = new NameDoc();
         $child1->nodename = 'child1';
         $child1->parent=$doc;
+
         $this->dm->persist($child1);
         $this->dm->flush();
         $this->dm->clear();
@@ -101,15 +103,16 @@ class HierarchyTest extends PHPCRFunctionalTestCase
         $this->assertCount(1,$doc->children);
 
         $child1 = $doc->children->first();
+
         $this->assertEquals('child1',$child1->nodename);
 
         $child1->nodename .= '-new';
 
-        $this->dm->persist($child1);
         $this->dm->flush();
         $this->dm->clear();
 
         $doc = $this->dm->find($this->type, '/functional/thename');
+
         $this->assertCount(1,$doc->children);
     }
 
